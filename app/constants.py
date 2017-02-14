@@ -1,6 +1,6 @@
 import os
 #use os.environ.get('environmental variable')
-DATABASE_URL = 'sqlite:///db.sqlite'
+DATABASE_URL = 'sqlite:///AlgoDerm.db'
 SECRET_KEY = 'its_a_secret'
 
 

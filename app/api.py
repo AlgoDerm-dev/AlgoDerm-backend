@@ -60,32 +60,39 @@ def signup():
             userjson["id"] = str(int(m.hexdigest(), 16))[0:12]
             return jsonify({"result" : userjson})
         else:
-            return jsonify({"error" : "username already taken"}), 403
+            return jsonify({"error" : "username already taken"}), 400
 
 
-@app.route('/client')
+@app.route('/client', methods=['POST'])
 def client():
-    user = User.query.filter_by(id=1).first()
+    email = request.json.get('email') 
+    password = request.json.get('password')
+    if not email:
+        return jsonify({'error': 'please provide a email'}), 400
+    if not password:
+        return jsonify({'error': 'please provide a password'}), 400
+    user = User.query.filter_by(email = email).first()
     if not user:
         return jsonify({'error': 'no user found'}), 404
-    item = Client(
-        client_id=gen_salt(40),
-        client_secret=gen_salt(50),
-        _redirect_uris=' '.join([
-            'http://localhost:8000/authorized',
-            'http://127.0.0.1:8000/authorized',
-            'http://127.0.1:8000/authorized',
-            'http://127.1:8000/authorized',
-            ]),
-        _default_scopes='email',
-        user_id=user.id,
-    )
-    db.session.add(item)
-    db.session.commit()
-    return jsonify(
-        client_id=item.client_id,
-        client_secret=item.client_secret,
-    )
+    if user.verify_password(password):
+        item = Client(
+            client_id=gen_salt(40),
+            client_secret=gen_salt(50),
+            _redirect_uris=' '.join([
+                'http://localhost:8000/authorized',
+                'http://127.0.0.1:8000/authorized',
+                'http://127.0.1:8000/authorized',
+                'http://127.1:8000/authorized',
+                ]),
+            _default_scopes='email',
+            user_id=user.id,
+        )
+        db.session.add(item)
+        db.session.commit()
+        return jsonify(
+            client_id=item.client_id,
+            client_secret=item.client_secret,
+        )
 
 
 @app.route('/oauth/token', methods=['GET', 'POST'])
@@ -169,8 +176,8 @@ def authorize(*args, **kwargs):
     return confirm == 'yes'
 
 @oauth.usergetter
-def get_user(username, password, *args, **kwargs):
-    user = User.query.filter_by(username=username).first()
+def get_user(email, password, *args, **kwargs):
+    user = User.query.filter_by(email=email).first()
     if user.verify_password(password):
         return user
     return None
