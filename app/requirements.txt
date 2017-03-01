@@ -13,6 +13,7 @@ numpy==1.12.0
 oauthlib==2.0.1
 passlib==1.7.1
 protobuf==3.2.0
+PyMySQL==0.7.10
 python-editor==1.0.3
 requests==2.13.0
 requests-oauthlib==0.7.0

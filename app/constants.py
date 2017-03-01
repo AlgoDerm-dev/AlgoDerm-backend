@@ -1,6 +1,7 @@
 import os
 #use os.environ.get('environmental variable')
-DATABASE_URL = 'sqlite:///AlgoDerm.db'
+DATABASE_URL = 'mysql+pymysql://root:@localhost:3306/AlgoDerm'
+#mysql+pymysql://<username>:<password>@<host>
 SECRET_KEY = 'its_a_secret'
 
 

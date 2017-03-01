@@ -151,6 +151,70 @@ class Token(db.Model):
 
 
 
+
+class Patient(db.Model):
+    __tablename__ = 'patient'
+    id = db.Column(db.Integer, primary_key=True)
+    fname = db.Column(db.String(100))
+    lname = db.Column(db.String(100))
+    gender = db.Column(db.String(100))
+    complexion = db.Column(db.String(100))
+    race = db.Column(db.String(100))
+    location = db.Column(db.String(100))
+
+
+    def __init__(self, fname, lname):
+            self.fname = fname
+            self.lname = lname
+
+    def __repr__(self):
+            return "<Patient(%s, %s)>" % (self.fname, self.lname)
+
+class NewImage(db.Model):
+    __tablename__ = 'newimage'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    location = db.Column(db.String(100))
+    date = db.Column(db.Date)
+    dbmatch_id = db.Column(db.Integer)
+    patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"), nullable=False)
+
+    def __init__(self, name):
+            self.name = name
+
+    def __repr__(self):
+            return "<NewImage(%s, %s)>" % (self.name)
+
+class Description(db.Model):
+    __tablename__ = 'description'
+
+    id = db.Column(db.Integer, primary_key=True)
+    size = db.Column(db.String(100))
+    img_description = db.Column(db.String(100))
+    color = db.Column(db.String(100))
+    physical_appearance = db.Column(db.String(100))
+    img_id = db.Column(db.Integer, db.ForeignKey("newimage.id"), nullable=False)
+
+    def __init__(self, img_id):
+            self.img_id = img_id
+
+    def __repr__(self):
+            return "<Description(%s, %s)>" % (self.img_id)
+
+class DBImage(db.Model):
+    __tablename__ = 'dbimage'
+
+    id = db.Column(db.Integer, primary_key=True)
+    img_id = db.Column(db.Integer, db.ForeignKey("newimage.id"), nullable=False)
+
+    def __init__(self, id):
+            self.id = id
+    def __repr__(self):
+            return "<DBImage(%s, %s)>" % (self.id)
+
+
+
 def list_model_to_dict(inst, cls):
     items = []
     for obj in inst:
