@@ -1,42 +1,44 @@
 def determineColor(rgb, hsl):
+    color = None
     if determine_GREY(rgb):
-        return "Grey"
+        color =  "Grey"
     elif determine_BLACK(rgb):
-        return "Black"
+        color =  "Black"
     elif determine_WHITE(rgb):
-        return "White"
+        color =  "White"
     elif hsl[0] >= 355 or hsl[0] <= 10:
-        return determine_RED(rgb)
-    elif hsl[0] >= 11 and hsl[0] <= 20:
-        return determine_RED_ORANGE(hsl)
-    elif hsl[0] >= 21 and hsl[0] <= 40:
-        return determine_ORANGE(rgb)
-    elif hsl[0] >= 41 and hsl[0] <= 50:
-        return determine_ORANGE_YELLOW(rgb)
-    elif hsl[0] >= 51 and hsl[0] <= 60:
-        return determine_YELLOW(rgb)
-    elif hsl[0] >= 61 and hsl[0] <= 80:
-        return determine_YELLOW_GREEN(rgb)
-    elif hsl[0] >= 81 and hsl[0] <= 140:
-        return "Green"
-    elif hsl[0] >= 141 and hsl[0] <= 169:
-        return determine_GREEN_CYAN(hsl)
-    elif hsl[0] >= 170 and hsl[0] <= 200:
-        return determine_CYAN(hsl)
-    elif hsl[0] >= 201 and hsl[0] <= 220:
-        return determine_CYAN_BLUE(hsl)
-    elif hsl[0] >= 221 and hsl[0] <= 240:
-        return "Blue"
-    elif hsl[0] >= 241 and hsl[0] <= 280:
-        return "Blue-Magenta"
-    elif hsl[0] >= 281 and hsl[0] <= 320:
-        return "Magenta"
-    elif hsl[0] >= 321 and hsl[0] <= 330:
-        return "Magenta-Pink"
-    elif hsl[0] >= 331 and hsl[0] <= 345:
-        return determine_PINK(rgb)
-    elif hsl[0] >= 346 and hsl[0] <= 355:
-        return determine_PINK_RED(rgb)
+        color =  determine_RED(rgb)
+    elif hsl[0] > 10 and hsl[0] <= 20:
+        color =  determine_RED_ORANGE(hsl)
+    elif hsl[0] > 20 and hsl[0] <= 40:
+        color =  determine_ORANGE(rgb)
+    elif hsl[0] > 40 and hsl[0] <= 50:
+        color =  determine_ORANGE_YELLOW(rgb)
+    elif hsl[0] > 50 and hsl[0] <= 60:
+        color =  determine_YELLOW(rgb)
+    elif hsl[0] > 60 and hsl[0] <= 80:
+        color =  determine_YELLOW_GREEN(rgb)
+    elif hsl[0] > 80 and hsl[0] <= 140:
+        color =  "Green"
+    elif hsl[0] > 140 and hsl[0] <= 169:
+        color =  determine_GREEN_CYAN(hsl)
+    elif hsl[0] > 169 and hsl[0] <= 200:
+        color =  determine_CYAN(hsl)
+    elif hsl[0] > 200 and hsl[0] <= 220:
+        color =  determine_CYAN_BLUE(hsl)
+    elif hsl[0] > 220 and hsl[0] <= 240:
+        color =  "Blue"
+    elif hsl[0] > 240 and hsl[0] <= 280:
+        color =  "Blue-Magenta"
+    elif hsl[0] > 280 and hsl[0] <= 320:
+        color =  "Magenta"
+    elif hsl[0] > 320 and hsl[0] <= 330:
+        color =  "Magenta-Pink"
+    elif hsl[0] > 330 and hsl[0] <= 345:
+        color =  determine_PINK(rgb)
+    elif hsl[0] > 345 and hsl[0] <= 355:
+        color =  determine_PINK_RED(rgb)
+    return color
 
 def determine_RED(rgb):
     sum = rgb[0] + rgb[1] + rgb[2]
@@ -109,7 +111,7 @@ def determine_BLACK(rgb):
         return False
 
 def determine_GREY(rgb):
-    if abs(rgb[0] - rgb[1]) <= 30 and abs(rgb[2] - rgb[1]) <= 30 and abs(rgb[0] - rgb[2]) <= 30:
+    if abs(rgb[0] - rgb[1]) <= 15 and abs(rgb[2] - rgb[1]) <= 15 and abs(rgb[0] - rgb[2]) <= 15:
         return True
     else:
         return False
