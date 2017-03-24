@@ -12,7 +12,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from statistics import median
-
+import datetime
 force_auto_coercion() #for the password
 db = SQLAlchemy()
 
@@ -21,6 +21,12 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(30), nullable = False, unique = True)
     name = db.Column(db.String(50), nullable = True)
+    last_name = db.Column(db.String(100), nullable = True)
+    signed_up = db.Column(db.DateTime, default = datetime.datetime.utcnow)
+    gender = db.Column(db.String(100), nullable = True)
+    complexion = db.Column(db.String(100), nullable = True)
+    race = db.Column(db.String(100), nullable = True)
+    img_path = db.Column(db.String(100), nullable = True)
     phone = db.Column(db.String(10), nullable = True, unique = True) #add a phonenumber field 
     email = db.Column(db.String(75), nullable = False, unique = True)
     password = db.Column(
@@ -151,67 +157,51 @@ class Token(db.Model):
 
 
 
-
-class Patient(db.Model):
-    __tablename__ = 'patient'
-    id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(100))
-    lname = db.Column(db.String(100))
-    gender = db.Column(db.String(100))
-    complexion = db.Column(db.String(100))
-    race = db.Column(db.String(100))
-    location = db.Column(db.String(100))
-
-
-    def __init__(self, fname, lname):
-            self.fname = fname
-            self.lname = lname
-
-    def __repr__(self):
-            return "<Patient(%s, %s)>" % (self.fname, self.lname)
-
-class NewImage(db.Model):
-    __tablename__ = 'newimage'
-
+class UserImage(db.Model):
+    __tablename__ = 'user_image'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    location = db.Column(db.String(100))
-    date = db.Column(db.Date)
-    dbmatch_id = db.Column(db.Integer)
-    patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"), nullable=False)
-
-    def __init__(self, name):
-            self.name = name
-
-    def __repr__(self):
-            return "<NewImage(%s, %s)>" % (self.name)
-
-class Description(db.Model):
-    __tablename__ = 'description'
-
-    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.Text)
+    date = db.Column(db.DateTime, default = datetime.datetime.utcnow)
+    patient_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete='CASCADE'), nullable=False)
+    disease_id = db.Column(db.Integer, db.ForeignKey("disease.id"), nullable=True) #if this image has been identified to a disease
     size = db.Column(db.String(100))
-    img_description = db.Column(db.String(100))
+    img_description = db.Column(db.Text)
     color = db.Column(db.String(100))
     physical_appearance = db.Column(db.String(100))
-    img_id = db.Column(db.Integer, db.ForeignKey("newimage.id"), nullable=False)
-
-    def __init__(self, img_id):
-            self.img_id = img_id
-
     def __repr__(self):
-            return "<Description(%s, %s)>" % (self.img_id)
+        return "<UserImage(%s)>" % (self.patient_id)
 
-class DBImage(db.Model):
-    __tablename__ = 'dbimage'
 
+class Disease(db.Model):
+    __tablename__ = 'disease'
     id = db.Column(db.Integer, primary_key=True)
-    img_id = db.Column(db.Integer, db.ForeignKey("newimage.id"), nullable=False)
-
-    def __init__(self, id):
-            self.id = id
+    name = db.Column(db.String(100), nullable = False)
+    region = db.Column(db.String(100), nullable = False)
+    color = db.Column(db.String(100), nullable = False)
+    physical_appearance = db.Column(db.String(100), nullable = True)
+    age_range_high = db.Column(db.Integer, nullable = True) 
+    age_range_low = db.Column(db.Integer, nullable = True) #constraints needed on age 
+    symptoms = db.Column(db.Text, nullable = False)
+    more_info = db.Column(db.Text, nullable = True)
     def __repr__(self):
-            return "<DBImage(%s, %s)>" % (self.id)
+        return "<Disease(%s, %s)>" % (self.id, self.name)
+
+
+
+
+
+class DiseaseImage(db.Model):
+    __tablename__ = 'disease_image'
+    id = db.Column(db.Integer, primary_key=True)
+    source = db.Column(db.String(100))
+    path = db.Column(db.Text)
+    date = db.Column(db.DateTime, default = datetime.datetime.utcnow)
+    disease_id = db.Column(db.Integer, db.ForeignKey("disease.id", ondelete='CASCADE'), nullable=False)
+    def __repr__(self):
+        return "<DiseaseImage for(%s, %s)>" % (self.disease_id, self.path)
+
+
 
 
 
@@ -224,6 +214,7 @@ def list_model_to_dict(inst, cls):
 
 
 def model_to_dict(inst, cls):
+#can use inst.__class instead of cls **** looking into this
   """
   Jsonify the sql alchemy query result. Skips attr starting with "_"
   """

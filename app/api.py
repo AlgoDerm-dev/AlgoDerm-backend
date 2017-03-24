@@ -13,12 +13,14 @@ from flask_oauthlib.provider import OAuth2Provider
 from models import *
 import hashlib
 import os
+from routes import app_routes
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = SECRET_KEY
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+    app.register_blueprint(app_routes, url_prefix = '/api/v2')
     db.init_app(app)
     with app.app_context():
         db.create_all() #needed to create the tables 
