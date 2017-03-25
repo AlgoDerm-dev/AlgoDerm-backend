@@ -4,10 +4,16 @@ DATABASE_URL = 'mysql+pymysql://root:@localhost:3306/AlgoDerm'
 #mysql+pymysql://<username>:<password>@<host>
 SECRET_KEY = 'its_a_secret'
 
+BUCKET_NAME = 'algoderm-dev-s3'
+
 # Access Key ID:
-AWS_KEY = 'AKIAJRXH42WGMAYYJCPQ'
+AWS_KEY = 'AKIAIJD4UIHWHL24CBTA'
 # Secret Access Key:
-AWS_SECRET = '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'
+AWS_SECRET = 'afseFDhzm4VXpn/C50CmgwFW4egbNJL6yJ8xouHS'
+
+#allowed file extentions
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
 class SimpleMultiDict(dict):
     def getlist(self, key):
         return self[key]
